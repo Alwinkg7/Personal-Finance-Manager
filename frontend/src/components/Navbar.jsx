@@ -1,123 +1,88 @@
-import React, { useState } from "react";
-import { Flex, HStack, Image, Text, Button, IconButton, useBreakpointValue, Stack, Box } from "@chakra-ui/react";
+import React from "react";
+import {
+  Flex,
+  VStack,
+  Image,
+  Text,
+  Button,
+  IconButton,
+  useBreakpointValue,
+  Box,
+  Collapse,
+  useDisclosure,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem
+} from "@chakra-ui/react";
 import { Link, useNavigate } from "react-router-dom";
-import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
+import { 
+  HamburgerIcon, 
+  CloseIcon
+} from "@chakra-ui/icons";
 
-const Navbar = ({ isLoggedIn, user, onLogout }) => {
+const Navbar = ({ isLoggedIn, onLogout }) => {
   const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(false);
   const isMobile = useBreakpointValue({ base: true, md: false });
-
-  const toggleMenu = () => setIsOpen(!isOpen);
+  const { isOpen: isSidebarOpen, onToggle: toggleSidebar } = useDisclosure({ defaultIsOpen: true });
+  const { isOpen: isMobileSidebarOpen, onToggle: toggleMobileSidebar } = useDisclosure();
 
   return (
     <Flex
       as="nav"
-      align="center"
-      justify="space-between"
-      wrap="wrap"
-      padding={{ base: 4, md: "1.5rem" }}
+      direction="column"
+      align="flex-start"
+      justify="flex-start"
+      width={{ base: "100%", md: isSidebarOpen ? "250px" : "60px" }}
+      height="100vh"
       bg="#00a8a8"
       color="white"
+      position="sticky"
+      top="0"
+      left="0"
+      zIndex="1000"
+      overflowY="auto"
+      transition="width 0.3s ease"
     >
-      {/* Logo and Title */}
-      <HStack spacing={4}>
-        <Image
-          src=".\Fynancea (4).png" // Replace with the path to your logo
-          alt="Logo"
-          boxSize={{ base: "50px", md: "60px" }}
-        />
-        <Text fontSize={{ base: "lg", md: "xl" }} fontWeight="bold">
-          FinBridge
-        </Text>
-      </HStack>
-
-      {/* Hamburger Menu for Mobile */}
-      {isMobile && (
+      <Box p={{ base: 4, md: "1.5rem" }} width="100%" display="flex" alignItems="center" justifyContent="space-between">
+        {isSidebarOpen && (
+          <Flex align="center">
+            <Image src="./Fynancea (4).png" alt="Logo" boxSize={{ base: "50px", md: "60px" }} />
+            <Text fontSize={{ base: "lg", md: "xl" }} fontWeight="bold" ml={2}>
+              FinBridge
+            </Text>
+          </Flex>
+        )}
         <IconButton
-          aria-label="Open Menu"
-          icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
-          size="md"
+          aria-label="Toggle Sidebar"
+          icon={isSidebarOpen ? <CloseIcon /> : <HamburgerIcon />}
+          size="sm"
           colorScheme="whiteAlpha"
-          onClick={toggleMenu}
+          onClick={toggleSidebar}
+          display={{ base: "none", md: "block" }}
         />
-      )}
-
-      {/* Navigation Links */}
-      {(isMobile && isOpen) || !isMobile ? (
-        <Box
-          display={{ base: isOpen ? "block" : "none", md: "block" }}
-          flexBasis={{ base: "100%", md: "auto" }}
-          mt={{ base: 4, md: 0 }}
-        >
-          <Stack
-            direction={{ base: "column", md: "row" }}
-            spacing={{ base: 2, md: 4 }}
-            align="center"
-          >
-            {isLoggedIn ? (
-              <>
-                <Link to="/loggedinhome">
-                  <Button variant="ghost" colorScheme="whiteAlpha.500">
-                    Home
-                  </Button>
-                </Link>
-                <Link to="/transactions">
-                  <Button variant="ghost" colorScheme="whiteAlpha.500">
-                    Transactions
-                  </Button>
-                </Link>
-                <Link to="/investmentanalytics">
-                  <Button variant="ghost" colorScheme="whiteAlpha.500">
-                    Investment Analytics
-                  </Button>
-                </Link>
-                <Link to="/notification">
-                  <Button variant="ghost" colorScheme="whiteAlpha.500">
-                    Notifications
-                  </Button>
-                </Link>
-                <Link to="/settings">
-                  <Button variant="ghost" colorScheme="whiteAlpha.500">
-                    Settings
-                  </Button>
-                </Link>
-                <Link to="/financial-education">
-                  <Button variant="ghost" colorScheme="whiteAlpha.500">
-                    Financial Education
-                  </Button>
-                </Link>
-                <Button variant="ghost" colorScheme="whiteAlpha.500" onClick={onLogout}>
-                  Logout
-                </Button>
-              </>
-            ) : (
-              <>
-                <Link to="/guesthome">
-                  <Button variant="ghost" colorScheme="whiteAlpha.500">
-                    Home
-                  </Button>
-                </Link>
-                <Link to="/login">
-                  <Button variant="ghost" colorScheme="whiteAlpha.500">
-                    Login
-                  </Button>
-                </Link>
-                <Link to="/signup">
-                  <Button variant="ghost" colorScheme="whiteAlpha.500">
-                    Sign Up
-                  </Button>
-                </Link>
-                <Link to="/aboutus">
-                  <Button variant="ghost" colorScheme="whiteAlpha.500">
-                    About Us
-                  </Button>
-                </Link>
-              </>
-            )}
-          </Stack>
-        </Box>
-      ) : null}
+      </Box>
+      <Collapse in={isMobile ? isMobileSidebarOpen : isSidebarOpen} animateOpacity>
+        <VStack spacing={4} align="flex-start" width="100%" p={{ base: 4, md: "1.5rem" }}>
+          {isLoggedIn ? (
+            <>
+              <Link to="/loggedinhome"><Button variant="ghost" colorScheme="whiteAlpha.500" width="100%" justifyContent="flex-start">Home</Button></Link>
+              <Link to="/transactions"><Button variant="ghost" colorScheme="whiteAlpha.500" width="100%" justifyContent="flex-start">Transactions</Button></Link>
+              <Link to="/investmentanalytics"><Button variant="ghost" colorScheme="whiteAlpha.500" width="100%" justifyContent="flex-start">Investment Analytics</Button></Link>
+              <Link to="/notification"><Button variant="ghost" colorScheme="whiteAlpha.500" width="100%" justifyContent="flex-start">Notifications</Button></Link>
+              <Link to="/settings"><Button variant="ghost" colorScheme="whiteAlpha.500" width="100%" justifyContent="flex-start">Settings</Button></Link>
+              <Button variant="ghost" colorScheme="whiteAlpha.500" width="100%" justifyContent="flex-start" onClick={onLogout}>Logout</Button>
+            </>
+          ) : (
+            <>
+              <Link to="/guesthome"><Button variant="ghost" colorScheme="whiteAlpha.500" width="100%" justifyContent="flex-start">Home</Button></Link>
+              <Link to="/login"><Button variant="ghost" colorScheme="whiteAlpha.500" width="100%" justifyContent="flex-start">Login</Button></Link>
+              <Link to="/signup"><Button variant="ghost" colorScheme="whiteAlpha.500" width="100%" justifyContent="flex-start">Sign Up</Button></Link>
+              <Link to="/aboutus"><Button variant="ghost" colorScheme="whiteAlpha.500" width="100%" justifyContent="flex-start">About Us</Button></Link>
+            </>
+          )}
+        </VStack>
+      </Collapse>
     </Flex>
   );
 };

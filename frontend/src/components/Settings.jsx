@@ -1,7 +1,22 @@
 import React, { useState } from "react";
 import {
-  Box, Heading, Button, Switch, FormControl, FormLabel, Input, VStack, Divider, Text,
-  Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon, useColorMode
+  Box,
+  Heading,
+  Button,
+  Switch,
+  FormControl,
+  FormLabel,
+  Input,
+  VStack,
+  Divider,
+  Text,
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+  AccordionIcon,
+  useColorMode,
+  useToast,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 
@@ -9,6 +24,50 @@ const Settings = () => {
   const { colorMode, toggleColorMode } = useColorMode();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
+  const toast = useToast();
+
+  // Function to validate email format
+  const validateEmail = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Basic email regex
+    return regex.test(email);
+  };
+
+  // Function to handle saving changes
+  const handleSaveChanges = () => {
+    if (!username || !email) {
+      toast({
+        title: "Error",
+        description: "Please fill in all fields.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      toast({
+        title: "Invalid Email",
+        description: "Please enter a valid email address.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    // Simulate saving changes (you can replace this with an API call)
+    toast({
+      title: "Changes Saved",
+      description: "Your profile has been updated successfully.",
+      status: "success",
+      duration: 5000,
+      isClosable: true,
+    });
+
+    setUsername("");
+    setEmail("");
+  };
 
   return (
     <Box position="relative" minH="100vh">
@@ -60,7 +119,12 @@ const Settings = () => {
           />
         </FormControl>
 
-        <Button colorScheme="teal" mt={2} width={{ base: "100%", md: "auto" }}>
+        <Button
+          colorScheme="teal"
+          mt={2}
+          width={{ base: "100%", md: "auto" }}
+          onClick={handleSaveChanges}
+        >
           Save Changes
         </Button>
 

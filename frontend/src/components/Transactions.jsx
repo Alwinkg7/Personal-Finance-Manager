@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Box, Table, Thead, Tbody, Tr, Th, Td, Text, Badge, Button } from "@chakra-ui/react";
-import ParticlesBg from "particles-bg";
 import { getTransactions } from "@/Transactionservice"; // Import the service
 
 const Transactions = () => {

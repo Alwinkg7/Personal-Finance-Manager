@@ -56,12 +56,13 @@ const App = () => {
 
   return (
     <Router>
-      {/* Include the Navbar */}
-      <Navbar isLoggedIn={isLoggedIn} user={user} onLogout={handleLogout} />
+      {/* Main Layout */}
+      <Flex minH="100vh">
+        {/* Navbar (Sidebar) */}
+        <Navbar isLoggedIn={isLoggedIn} user={user} onLogout={handleLogout} />
 
-      {/* Sidebar and Main Content */}
-      <Flex direction="column" minH="100vh">
-        <Box p={{ base: 2, md: 4 }} flex={1}>
+        {/* Main Content */}
+        <Box flex={1} overflowY="auto" p={{ base: 2, md: 4 }}>
           <Routes>
             <Route
               path="/"
