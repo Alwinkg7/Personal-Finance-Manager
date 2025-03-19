@@ -60,6 +60,7 @@ const Navbar = ({ isLoggedIn, onLogout, children }) => {
               <NavItem to="/transactions" label="Transactions" onToggle={onToggle} />
               <NavItem to="/investmentanalytics" label="Investment Analytics" onToggle={onToggle} />
               <NavItem to="/notification" label="Notifications" onToggle={onToggle} />
+              <NavItem to="/financial-education" label="Financial Education" onToggle={onToggle} />
               <NavItem to="/settings" label="Settings" onToggle={onToggle} />
               <Button
                 variant="ghost"

@@ -14,8 +14,6 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-
-
 }, { 
     timestamps: true // this will automatically create a timestamp when a new user is created 
 });

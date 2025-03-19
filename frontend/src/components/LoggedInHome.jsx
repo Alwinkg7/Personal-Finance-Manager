@@ -1,42 +1,13 @@
 import React, { useEffect, useState } from "react";
-import {
-  Box,
-  Text,
-  Flex,
-  Heading,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  Button,
-  Input,
-  Select,
-  Stack,
-  useToast,
-  Badge,
-  Progress,
-  VStack,
-  List,
-  ListItem,
-  ListIcon,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  useDisclosure,
-  FormControl,
-  FormLabel,
-  FormErrorMessage,
-} from "@chakra-ui/react";
+import {Box,Text,Flex,Heading,Table,Thead,Tbody,Tr,Th,Td,Button,Input,Select,Stack,useToast,Badge,Progress,VStack,List,
+  ListItem,ListIcon,useDisclosure} from "@chakra-ui/react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from "recharts";
 import { useNavigate } from "react-router-dom";
 import { getTransactions, addTransaction, deleteTransaction, updateTransaction } from "@/Transactionservice";
 import { MdCheckCircle } from "react-icons/md"; // For list icons
+import GoalComponent from "./GoalComponent";
+import BudgetComponent from "./BudgetComponent";
+
 
 const LoggedInHome = ({ onLogout, user }) => {
   const [transactions, setTransactions] = useState([]);
@@ -50,7 +21,6 @@ const LoggedInHome = ({ onLogout, user }) => {
   const [editingTransaction, setEditingTransaction] = useState(null);
   const [budget, setBudget] = useState({ category: "", limit: "" });
   const [budgets, setBudgets] = useState([]); // State for storing budgets
-  const [challenges, setChallenges] = useState([]);
   const [financialAdvice, setFinancialAdvice] = useState([]);
   const toast = useToast();
   const navigate = useNavigate();
@@ -255,115 +225,6 @@ const LoggedInHome = ({ onLogout, user }) => {
     amount: txn.type === "income" ? txn.amount : -txn.amount,
   }));
 
-  // Modal state for creating challenges
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const [newChallenge, setNewChallenge] = useState({
-    name: "",
-    targetAmount: "",
-    timeframe: "",
-  });
-  const [errors, setErrors] = useState({});
-
-  // Validate challenge inputs
-  const validateChallenge = () => {
-    const newErrors = {};
-    if (!newChallenge.name) newErrors.name = "Name is required.";
-    if (!newChallenge.targetAmount || isNaN(newChallenge.targetAmount) || newChallenge.targetAmount <= 0)
-      newErrors.targetAmount = "Target amount must be a positive number.";
-    if (!newChallenge.timeframe || isNaN(newChallenge.timeframe) || newChallenge.timeframe <= 0)
-      newErrors.timeframe = "Timeframe must be a positive number.";
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  // Add a new challenge
-  const handleAddChallenge = () => {
-    if (!validateChallenge()) return;
-
-    const newChallengeData = {
-      id: challenges.length + 1,
-      name: newChallenge.name,
-      targetAmount: parseFloat(newChallenge.targetAmount),
-      savedAmount: 0,
-      timeframe: parseInt(newChallenge.timeframe),
-      completed: false,
-      inputValue: "", // Initialize inputValue for each challenge
-    };
-
-    setChallenges([...challenges, newChallengeData]);
-    setNewChallenge({ name: "", targetAmount: "", timeframe: "" });
-    onClose();
-    toast({
-      title: "Challenge Added",
-      description: "Your new savings challenge has been created.",
-      status: "success",
-      duration: 5000,
-      isClosable: true,
-    });
-  };
-  
-  // Update savings amount and check if challenge is completed
-  const addSavings = (challengeId, amount) => {
-    setChallenges((prevChallenges) =>
-      prevChallenges.map((challenge) =>
-        challenge.id === challengeId
-          ? {
-              ...challenge,
-              savedAmount: challenge.savedAmount + amount,
-              completed: challenge.savedAmount + amount >= challenge.targetAmount,
-            }
-          : challenge
-      )
-    );
-  };
-  // Handle adding savings to a challenge
-  const handleAddSavings = (challengeId, inputValue) => {
-    const amount = parseFloat(inputValue);
-    if (!isNaN(amount) && amount > 0) {
-      addSavings(challengeId, amount);
-      // Reset the inputValue for the challenge
-      setChallenges((prevChallenges) =>
-        prevChallenges.map((challenge) =>
-          challenge.id === challengeId ? { ...challenge, inputValue: "" } : challenge
-        )
-      );
-    } else {
-      toast({
-        title: "Invalid Amount",
-        description: "Please enter a valid amount to add.",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
-    }
-  };
-
-  // Delete a challenge
-  const handleDeleteChallenge = (challengeId) => {
-    setChallenges(challenges.filter((challenge) => challenge.id !== challengeId));
-    toast({
-      title: "Challenge Deleted",
-      description: "The savings challenge has been removed.",
-      status: "info",
-      duration: 5000,
-      isClosable: true,
-    });
-  };
-
-  // Check if a challenge is completed and show a toast
-  useEffect(() => {
-    challenges.forEach((challenge) => {
-      if (challenge.savedAmount >= challenge.targetAmount && !challenge.completed) {
-        toast({
-          title: "Challenge Completed!",
-          description: `You've completed the "${challenge.name}" challenge.`,
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-        });
-      }
-    });
-  }, [challenges, toast]);
 
   return (
     <Box bg="gray.50" minHeight="100vh" p={{ base: 4, md: 8 }}>
@@ -371,6 +232,10 @@ const LoggedInHome = ({ onLogout, user }) => {
       <Flex align="center" justify="space-between" mb={8}>
         <Heading as="h1" fontSize={{ base: "xl", md: "2xl" }} color="teal.500">
           Welcome, {user.name}!
+        </Heading>
+
+        <Heading as="h1" fontSize={{ base: "xl", md: "2xl" }} color="teal.500">
+          FinBridge
         </Heading>
       </Flex>
 
@@ -516,9 +381,9 @@ const LoggedInHome = ({ onLogout, user }) => {
       </Box>
 
       {/* Chart and Financial Advice Sections */}
-      <Flex direction={{ base: "column", md: "row" }} justify="space-between" gap={8} mb={8}>
+      <Flex direction={{ base: "column", md: "row" }} justify="space-between" gap={4} mb={8}>
         {/* Chart Section */}
-        <Box bg="white" p={6} borderRadius="lg" boxShadow="md" width={{ base: "100%", md: "60%" }}>
+        <Box bg="white" p={4} borderRadius="lg" boxShadow="md" width={{ base: "100%", md: "50%" }}>
           <Heading as="h2" fontSize={{ base: "lg", md: "xl" }} mb={4} color="teal.500">
             Spending and Earnings
           </Heading>
@@ -533,7 +398,7 @@ const LoggedInHome = ({ onLogout, user }) => {
         </Box>
 
         {/* Financial Advice Section */}
-        <Box bg="white" p={6} borderRadius="lg" boxShadow="md" width={{ base: "100%", md: "35%" }}>
+        <Box bg="white" p={6} borderRadius="lg" boxShadow="md" width={{ base: "100%", md: "50%" }}>
           <Heading as="h2" fontSize={{ base: "lg", md: "xl" }} mb={4} color="teal.500">
             Financial Advice
           </Heading>
@@ -552,298 +417,21 @@ const LoggedInHome = ({ onLogout, user }) => {
         </Box>
       </Flex>
 
-      {/* Budget Planning Section */}
-      <Box bg="white" p={6} borderRadius="lg" boxShadow="md" mb={8}>
-        <Heading as="h2" fontSize={{ base: "lg", md: "xl" }} mb={4} color="teal.500">
-          Budget Planning
-        </Heading>
+      <Flex  direction={{ base: "column", md: "row" }} justify="space-between" gap={4} mb={8}>
+        {/* Budget Planning Section */}
+        <Box bg="white" p={6} borderRadius="lg" boxShadow="md" width={{ base: "100%", md: "50%" }}>
+          <BudgetComponent />
+        </Box>
 
-        {/* Budget Input Form */}
-        <Flex direction={{ base: "column", md: "row" }} align="center" gap={4} mb={6}>
-          <Input
-            placeholder="Category (e.g., Groceries)"
-            value={budget.category}
-            onChange={(e) => setBudget({ ...budget, category: e.target.value })}
-            flex={{ base: "1", md: "1" }}
-            isInvalid={!budget.category && budget.limit}
-          />
-          <Input
-            type="number"
-            placeholder="Limit (e.g., 5000)"
-            value={budget.limit}
-            onChange={(e) => setBudget({ ...budget, limit: e.target.value })}
-            flex={{ base: "1", md: "1" }}
-            isInvalid={!budget.limit && budget.category}
-          />
-          <Button
-            colorScheme="teal"
-            onClick={() => {
-              if (!budget.category || !budget.limit) {
-                toast({
-                  title: "Error",
-                  description: "Category and Limit are required.",
-                  status: "error",
-                  duration: 5000,
-                  isClosable: true,
-                });
-                return;
-              }
-              setBudgets([...budgets, { ...budget, id: Date.now(), spent: 0, newSpent: "" }]);
-              setBudget({ category: "", limit: "" });
-              toast({
-                title: "Budget Set",
-                description: "Your budget has been added successfully.",
-                status: "success",
-                duration: 5000,
-                isClosable: true,
-              });
-            }}
-            flexShrink={0}
-            width={{ base: "100%", md: "auto" }}
-          >
-            Set Budget
-          </Button>
-        </Flex>
 
-        {/* List of Existing Budgets */}
-        <VStack spacing={4} align="stretch">
-          {budgets.map((budget, index) => (
-            <Box key={budget.id} p={4} borderWidth="1px" borderRadius="lg">
-              <Flex justify="space-between" align="center" mb={2}>
-                <Heading as="h3" fontSize="lg" color="teal.500">
-                  {budget.category}
-                </Heading>
-                <Flex gap={2}>
-                  <Button
-                    size="sm"
-                    colorScheme="blue"
-                    onClick={() => {
-                      setBudget({ category: budget.category, limit: budget.limit });
-                      setBudgets(budgets.filter((b) => b.id !== budget.id));
-                    }}
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    size="sm"
-                    colorScheme="red"
-                    onClick={() => {
-                      setBudgets(budgets.filter((b) => b.id !== budget.id));
-                      toast({
-                        title: "Budget Deleted",
-                        description: `The budget for ${budget.category} has been removed.`,
-                        status: "info",
-                        color: "red",
-                        duration: 5000,
-                        isClosable: true,
-                      });
-                    }}
-                  >
-                    Delete
-                  </Button>
-                </Flex>
-              </Flex>
+        {/* Render the Savings Challenges section */}
+        <Box bg="white" p={6} borderRadius="lg" boxShadow="md" width={{ base: "100%", md: "50%" }}>
+          <GoalComponent />
+        </Box>
+      </Flex>
 
-              <Text fontSize="md" color="gray.700" mb={2}>
-                Limit: ₹{budget.limit}
-              </Text>
-              <Text fontSize="md" color="gray.700" mb={2}>
-                Spent: ₹{budget.spent}
-              </Text>
 
-              {/* Add Spend Section */}
-              <Flex gap={2} align="center" mb={2}>
-                <Input
-                  type="number"
-                  placeholder="Enter amount spent"
-                  value={budget.newSpent || ""}
-                  onChange={(e) => {
-                    const updatedBudgets = [...budgets];
-                    updatedBudgets[index].newSpent = e.target.value;
-                    setBudgets(updatedBudgets);
-                  }}
-                  size="sm"
-                  width="100px"
-                />
-                <Button
-                  size="sm"
-                  colorScheme="teal"
-                  onClick={() => {
-                    const amount = parseFloat(budget.newSpent);
-                    if (!isNaN(amount) && amount > 0) {
-                      const updatedBudgets = [...budgets];
-                      updatedBudgets[index].spent += amount;
-                      updatedBudgets[index].newSpent = "";
-                      setBudgets(updatedBudgets);
 
-                      toast({
-                        title: "Amount Added",
-                        description: `₹${amount} added to ${budget.category}.`,
-                        status: "success",
-                        duration: 5000,
-                        isClosable: true,
-                      });
-                    }
-                  }}
-                >
-                  Add Spend
-                </Button>
-              </Flex>
-
-              <Progress
-                value={(budget.spent / budget.limit) * 100}
-                size="sm"
-                colorScheme={budget.spent > budget.limit ? "red" : "teal"}
-                mb={2}
-              />
-              {budget.spent > budget.limit && (
-                <Badge colorScheme="red" fontSize="sm" p={1} borderRadius="md">
-                  Over Budget!
-                </Badge>
-              )}
-            </Box>
-          ))}
-        </VStack>
-      </Box>
-
-       {/* Render the Savings Challenges section */}
-      <Box bg="white" p={6} borderRadius="lg" boxShadow="md" mb={8}>
-        <Heading as="h2" fontSize={{ base: "lg", md: "xl" }} mb={4} color="teal.500">
-          Savings Challenges
-        </Heading>
-        <Text fontSize="md" color="gray.700" mb={6}>
-          Create and track your savings goals to achieve financial milestones!
-        </Text>
-
-        {/* Button to Add New Challenge */}
-        <Button colorScheme="teal" mb={6} onClick={onOpen}>
-          Create New Challenge
-        </Button>
-
-        {/* List of Challenges */}
-        <VStack spacing={6} align="stretch">
-          {challenges.map((challenge) => (
-            <Box key={challenge.id} p={4} borderWidth="1px" borderRadius="lg">
-              <Flex justify="space-between" align="center" mb={2}>
-                <Heading as="h3" fontSize="lg" color="teal.500">
-                  {challenge.name}
-                </Heading>
-                <Button
-                  size="sm"
-                  colorScheme="red"
-                  onClick={() => handleDeleteChallenge(challenge.id)}
-                >
-                  Delete
-                </Button>
-              </Flex>
-              <Text fontSize="md" color="gray.700" mb={2}>
-                Target: ₹{challenge.targetAmount} in {challenge.timeframe} days
-              </Text>
-              <Progress
-                value={(challenge.savedAmount / challenge.targetAmount) * 100}
-                size="sm"
-                colorScheme="teal"
-                mb={2}
-              />
-              <Text fontSize="md" color="gray.700" mb={2}>
-                Saved: ₹{challenge.savedAmount} / ₹{challenge.targetAmount}
-              </Text>
-              {challenge.completed ? (
-                <Badge colorScheme="green" fontSize="sm" p={1} borderRadius="md">
-                  Completed!
-                </Badge>
-              ) : (
-                <Flex gap={2}>
-                  <Input
-                    type="number"
-                    placeholder="Savings"
-                    width="100px"
-                    value={challenge.inputValue || ""}
-                    onChange={(e) => {
-                      const updatedChallenges = challenges.map((c) =>
-                        c.id === challenge.id
-                          ? { ...c, inputValue: e.target.value }
-                          : c
-                      );
-                      setChallenges(updatedChallenges);
-                    }}
-                  />
-                  <Button
-                    colorScheme="teal"
-                    size="sm"
-                    onClick={() => handleAddSavings(challenge.id, challenge.inputValue)}
-                  >
-                    Add
-                  </Button>
-                </Flex>
-              )}
-            </Box>
-          ))}
-        </VStack>
-
-        {/* Modal for Creating New Challenge */}
-        <Modal isOpen={isOpen} onClose={onClose}>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Create New Savings Challenge</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody>
-              <FormControl isInvalid={!!errors.name} mb={4}>
-                <FormLabel>Challenge Name</FormLabel>
-                <Input
-                  placeholder="e.g., Save $500 in 30 Days"
-                  value={newChallenge.name}
-                  onChange={(e) =>
-                    setNewChallenge({ ...newChallenge, name: e.target.value })
-                  }
-                />
-                <FormErrorMessage>{errors.name}</FormErrorMessage>
-              </FormControl>
-              <FormControl isInvalid={!!errors.targetAmount} mb={4}>
-                <FormLabel>Target Amount</FormLabel>
-                <Input
-                  type="number"
-                  placeholder="e.g., 500"
-                  value={newChallenge.targetAmount}
-                  onChange={(e) =>
-                    setNewChallenge({ ...newChallenge, targetAmount: e.target.value })
-                  }
-                />
-                <FormErrorMessage>{errors.targetAmount}</FormErrorMessage>
-              </FormControl>
-              <FormControl isInvalid={!!errors.timeframe} mb={4}>
-                <FormLabel>Timeframe (in days)</FormLabel>
-                <Input
-                  type="number"
-                  placeholder="e.g., 30"
-                  value={newChallenge.timeframe}
-                  onChange={(e) =>
-                    setNewChallenge({ ...newChallenge, timeframe: e.target.value })
-                  }
-                />
-                <FormErrorMessage>{errors.timeframe}</FormErrorMessage>
-              </FormControl>
-            </ModalBody>
-            <ModalFooter>
-              <Button
-                colorScheme="teal"
-                mr={3}
-                onClick={() => {
-                  if (validateChallenge()) {
-                    handleAddChallenge();
-                    onClose(); // Close the modal after adding the challenge
-                  }
-                }}
-              >
-                Create
-              </Button>
-              <Button variant="ghost" onClick={onClose}>
-                Cancel
-              </Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
-      </Box>
     </Box>
   );
 };

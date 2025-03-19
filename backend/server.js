@@ -4,7 +4,12 @@ import cors from 'cors';
 import { connectDB } from './config/database.js';
 import authRoutes from './routes/authRoutes.js';
 import transactionRoutes from "./routes/transactionRoutes.js";
+import investmentRoutes from "./routes/investmentRoutes.js";
+import goalRoutes from "./routes/goalRoutes.js";
+import budgetRoutes from "./routes/budgetRoutes.js";
+
 import mongoose from 'mongoose';
+
 
 import path from 'path';
 dotenv.config();
@@ -19,6 +24,9 @@ app.use(cors()); // Enable CORS for frontend communication
 // Routes
 app.use('/api/auth', authRoutes); // Authentication routes
 app.use("/api/transactions", transactionRoutes); // Transaction routes
+app.use("/api/investments", investmentRoutes); // Investment routes
+app.use("/api/goals", goalRoutes); // Goal routes
+app.use("/api/budgets", budgetRoutes); // Budget routes
 
 // Serve static assets in production
 if (process.env.NODE_ENV === 'production') {
