@@ -1,7 +1,7 @@
 # Personal Finance Manager (FinBridge)
 
 ## Description
-Personal Finance Manager is a web application designed to help users manage their finances effectively. It allows users to track their income and expenses, set budgets, participate in savings challenges, and receive personalized financial advice powered by Machine Learning (ML).
+Personal Finance Manager (FinBridge) is a web application designed to help users manage their finances effectively. It allows users to track their income and expenses, set budgets, participate in savings challenges, and receive personalized financial advice powered by Machine Learning (ML).
 
 ## Features
 - Track income and expenses
@@ -16,62 +16,64 @@ Personal Finance Manager is a web application designed to help users manage thei
 To run this project locally, follow these steps:
 
 ### 1. Clone the Repository
+```
 git clone https://github.com/your-username/Personal-Finance-Manager.git
 cd Personal-Finance-Manager
+```
 ### 2. Set Up the Frontend
 Navigate to the frontend directory:
 
-bash
-Copy
+```
 cd frontend
+```
 Install dependencies:
 
-bash
-Copy
+```
 npm install
+```
 Start the frontend server:
 
-bash
-Copy
+```
 npm start
+```
 ### 3. Set Up the Backend (Node.js)
 Navigate to the backend directory:
 
-bash
-Copy
+```
 cd ../backend
+```
 Install dependencies:
 
-bash
-Copy
+```
 npm install
+```
 Start the backend server:
 
-bash
-Copy
+```
 npm start
+```
 ### 4. Set Up the Django ML Service
 Navigate to the ml_service directory:
 
-bash
-Copy
+```
 cd ../ml_service
+```
 Create a virtual environment and activate it:
 
-bash
-Copy
+```
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
 Install dependencies:
 
-bash
-Copy
+```
 pip install -r requirements.txt
+```
 Run the Django server:
 
-bash
-Copy
+```
 python manage.py runserver
+```
 Usage
 ### Open your web browser and navigate to http://localhost:3000.
 
@@ -82,26 +84,26 @@ Usage
 ### Receive personalized financial advice powered by ML.
 
 ### Implementation Details
+
 ### 1. Django ML Service
 The Django ML service analyzes user transactions and provides personalized financial advice. It uses clustering algorithms (e.g., K-Means) to identify spending patterns and generate insights.
 
 ### Key Files:
-ml_service/financial_advice/views.py: Handles the /analyze/ endpoint.
+```ml_service/financial_advice/views.py: # Handles the /analyze/ endpoint.```
 
-ml_service/financial_advice/models.py: Defines the data models (if needed).
+```ml_service/financial_advice/models.py: # Defines the data models (if needed).```
 
-ml_service/financial_advice/urls.py: Defines the API routes.
+```ml_service/financial_advice/urls.py: # Defines the API routes.```
 
 ### Example: views.py
-python
-Copy
+
+```
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import pandas as pd
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 import json
-
 @csrf_exempt
 def analyze_spending(request):
     if request.method == "POST":
@@ -141,17 +143,18 @@ def analyze_spending(request):
             return JsonResponse({"error": str(e)}, status=500)
 
     return JsonResponse({"error": "Invalid request method"}, status=400)
+```
 ### 2. Backend (Node.js)
 The backend communicates with the Django ML service to fetch financial advice and serves it to the frontend.
 
 ### Key Files:
-backend/controllers/financialAdviceController.js: Handles the /api/financial-advice endpoint.
+```backend/controllers/financialAdviceController.js: #Handles the /api/financial-advice endpoint.```
 
-backend/routes/financialAdviceRoutes.js: Defines the API routes.
+```backend/routes/financialAdviceRoutes.js: # Defines the API routes.```
 
 ### Example: financialAdviceController.js
-javascript
-Copy
+
+```
 import axios from "axios";
 
 export const getFinancialAdvice = async (req, res) => {
@@ -190,17 +193,20 @@ export const getFinancialAdvice = async (req, res) => {
     res.status(500).json({ error: "Failed to generate financial advice" });
   }
 };
+```
 ### 3. Frontend (React)
 The frontend displays financial advice and interacts with the backend to fetch data.
 
 ### Key Files:
-frontend/src/components/FinancialAdvice.jsx: Displays financial advice.
-
-frontend/src/App.js: Main application component.
-
+```
+frontend/src/components/FinancialAdvice.jsx: # Displays financial advice.
+```
+```
+frontend/src/App.js: # Main application component.
+```
 ### Example: FinancialAdvice.jsx
-javascript
-Copy
+
+```
 import React, { useEffect, useState } from "react";
 import { Box, Heading, Text, List, ListItem, ListIcon } from "@chakra-ui/react";
 import { MdCheckCircle } from "react-icons/md";
@@ -247,16 +253,17 @@ const FinancialAdvice = ({ transactions }) => {
 };
 
 export default FinancialAdvice;
+```
 ### Contributing
 ### Contributions are welcome! Please follow these steps to contribute:
 
 ### Fork the repository.
 
-Create a new branch: git checkout -b feature/your-feature-name.
+Create a new branch: ```git checkout -b feature/your-feature-name```
 
-Make your changes and commit them: git commit -m 'Add some feature'.
+Make your changes and commit them: ```git commit -m 'Add some feature'```
 
-Push to the branch: git push origin feature/your-feature-name.
+Push to the branch: ```git push origin feature/your-feature-name```
 
 Open a pull request.
 
