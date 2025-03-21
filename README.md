@@ -16,7 +16,6 @@ Personal Finance Manager is a web application designed to help users manage thei
 To run this project locally, follow these steps:
 
 ### 1. Clone the Repository
-```bash
 git clone https://github.com/your-username/Personal-Finance-Manager.git
 cd Personal-Finance-Manager
 2. Set Up the Frontend
@@ -266,3 +265,4 @@ This project is licensed under the MIT License. See the LICENSE file for details
 
 Contact
 If you have any questions or suggestions, feel free to contact me at [alwinkgofficial@gmail.com].
+```bash
