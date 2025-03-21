@@ -7,7 +7,7 @@ import transactionRoutes from "./routes/transactionRoutes.js";
 import investmentRoutes from "./routes/investmentRoutes.js";
 import goalRoutes from "./routes/goalRoutes.js";
 import budgetRoutes from "./routes/budgetRoutes.js";
-
+import financialAdviceRoutes from "./routes/financialAdvice.js";
 import mongoose from 'mongoose';
 
 
@@ -27,6 +27,7 @@ app.use("/api/transactions", transactionRoutes); // Transaction routes
 app.use("/api/investments", investmentRoutes); // Investment routes
 app.use("/api/goals", goalRoutes); // Goal routes
 app.use("/api/budgets", budgetRoutes); // Budget routes
+app.use("/api/", financialAdviceRoutes); 
 
 // Serve static assets in production
 if (process.env.NODE_ENV === 'production') {

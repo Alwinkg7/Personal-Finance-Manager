@@ -5,6 +5,7 @@ import {
   deleteTransaction,
   getNetProfitLoss,
   updateTransaction,
+  getTransactionsByPeriod,
 } from "../controllers/transactionController.js";
 import { protect } from "../middleware/authMiddleware.js"; // ✅ Named import
 
@@ -15,5 +16,6 @@ router.get("/", protect, getTransactions); // Get user transactions
 router.delete("/:id", protect, deleteTransaction); // Delete transaction
 router.get("/profit-loss", protect, getNetProfitLoss);
 router.put("/:id", protect, updateTransaction); // Update transaction
+router.get("/by-period", protect, getTransactionsByPeriod);
 
 export default router;

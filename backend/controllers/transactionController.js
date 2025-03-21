@@ -112,4 +112,50 @@ export const updateTransaction = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+
+
+// Get transactions filtered by time period
+export const getTransactionsByPeriod = async (req, res) => {
+  const { period } = req.query; // e.g., "today", "this-week", "this-month", etc.
+
+  try {
+    const now = new Date();
+    let startDate;
+
+    switch (period) {
+      case "today":
+        startDate = new Date(now.setHours(0, 0, 0, 0));
+        break;
+      case "this-week":
+        startDate = new Date(now.setDate(now.getDate() - now.getDay()));
+        break;
+      case "this-month":
+        startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+        break;
+      case "last-3-months":
+        startDate = new Date(now.getFullYear(), now.getMonth() - 3, 1);
+        break;
+      case "last-6-months":
+        startDate = new Date(now.getFullYear(), now.getMonth() - 6, 1);
+        break;
+      case "last-year":
+        startDate = new Date(now.getFullYear() - 1, now.getMonth(), 1);
+        break;
+      default:
+        return res.status(400).json({ message: "Invalid period" });
+    }
+
+    const transactions = await Transaction.find({
+      user: req.user.id,
+      date: { $gte: startDate },
+    });
+
+    res.json(transactions);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+
 // Compare this snippet from backend/routes/userRoutes.js:

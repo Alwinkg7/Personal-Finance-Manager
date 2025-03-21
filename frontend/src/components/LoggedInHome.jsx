@@ -1,13 +1,27 @@
 import React, { useEffect, useState } from "react";
-import {Box,Text,Flex,Heading,Table,Thead,Tbody,Tr,Th,Td,Button,Input,Select,Stack,useToast,Badge,Progress,VStack,List,
-  ListItem,ListIcon,useDisclosure} from "@chakra-ui/react";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from "recharts";
+import {
+  Box,
+  Text,
+  Flex,
+  Heading,
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  Button,
+  Input,
+  Select,
+  Stack,
+  useToast,
+} from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { getTransactions, addTransaction, deleteTransaction, updateTransaction } from "@/Transactionservice";
-import { MdCheckCircle } from "react-icons/md"; // For list icons
 import GoalComponent from "./GoalComponent";
 import BudgetComponent from "./BudgetComponent";
-
+import PieChartComponent from "./PieChartComponent";
+import FinancialAdvice from "./FinancialAdvice"; // Import the FinancialAdvice component
 
 const LoggedInHome = ({ onLogout, user }) => {
   const [transactions, setTransactions] = useState([]);
@@ -21,7 +35,6 @@ const LoggedInHome = ({ onLogout, user }) => {
   const [editingTransaction, setEditingTransaction] = useState(null);
   const [budget, setBudget] = useState({ category: "", limit: "" });
   const [budgets, setBudgets] = useState([]); // State for storing budgets
-  const [financialAdvice, setFinancialAdvice] = useState([]);
   const toast = useToast();
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
@@ -32,7 +45,6 @@ const LoggedInHome = ({ onLogout, user }) => {
       try {
         const data = await getTransactions(token);
         setTransactions(data);
-        analyzeSpending(data); // Analyze spending to generate financial advice
       } catch (error) {
         toast({
           title: "Error",
@@ -46,44 +58,6 @@ const LoggedInHome = ({ onLogout, user }) => {
 
     fetchTransactions();
   }, [token, toast]);
-
-  // Analyze spending patterns and generate financial advice
-  const analyzeSpending = (transactions) => {
-    const advice = [];
-
-    // Calculate total spending by category
-    const spendingByCategory = transactions.reduce((acc, txn) => {
-      if (txn.type === "expense") {
-        acc[txn.category] = (acc[txn.category] || 0) + txn.amount;
-      }
-      return acc;
-    }, {});
-
-    // Example: Suggest reducing dining out if it exceeds a threshold
-    if (spendingByCategory["Dining Out"] > 200) {
-      advice.push("You could save $200/month by reducing dining out.");
-    }
-
-    // Example: Suggest investing if savings are high
-    const totalIncome = transactions
-      .filter((txn) => txn.type === "income")
-      .reduce((sum, txn) => sum + txn.amount, 0);
-    const totalExpenses = transactions
-      .filter((txn) => txn.type === "expense")
-      .reduce((sum, txn) => sum + txn.amount, 0);
-    const savings = totalIncome - totalExpenses;
-
-    if (savings > 500) {
-      advice.push("Consider investing your savings to grow your wealth.");
-    }
-
-    // Example: Suggest creating a budget if expenses are high
-    if (totalExpenses > 0.8 * totalIncome) {
-      advice.push("Create a budget to better manage your expenses.");
-    }
-
-    setFinancialAdvice(advice);
-  };
 
   // Handle adding a transaction
   const handleAddTransaction = async () => {
@@ -114,9 +88,6 @@ const LoggedInHome = ({ onLogout, user }) => {
         duration: 5000,
         isClosable: true,
       });
-
-      // Re-analyze spending after adding a new transaction
-      analyzeSpending([...transactions, addedTransaction]);
     } catch (error) {
       toast({
         title: "Error",
@@ -142,9 +113,6 @@ const LoggedInHome = ({ onLogout, user }) => {
         duration: 5000,
         isClosable: true,
       });
-
-      // Re-analyze spending after deleting a transaction
-      analyzeSpending(updatedTransactions);
     } catch (error) {
       toast({
         title: "Error",
@@ -184,9 +152,6 @@ const LoggedInHome = ({ onLogout, user }) => {
         duration: 5000,
         isClosable: true,
       });
-
-      // Re-analyze spending after updating a transaction
-      analyzeSpending(updatedTransactions);
     } catch (error) {
       toast({
         title: "Error",
@@ -219,13 +184,6 @@ const LoggedInHome = ({ onLogout, user }) => {
     return totalIncome - totalExpenses;
   };
 
-  // Prepare chart data
-  const chartData = transactions.map((txn) => ({
-    date: new Date(txn.date).toLocaleDateString(),
-    amount: txn.type === "income" ? txn.amount : -txn.amount,
-  }));
-
-
   return (
     <Box bg="gray.50" minHeight="100vh" p={{ base: 4, md: 8 }}>
       {/* Welcome Section */}
@@ -238,7 +196,6 @@ const LoggedInHome = ({ onLogout, user }) => {
           FinBridge
         </Heading>
       </Flex>
-
       {/* Net Profit/Loss Section */}
       <Box bg="white" p={6} borderRadius="lg" boxShadow="md" mb={8}>
         <Heading as="h2" fontSize={{ base: "lg", md: "xl" }} mb={4} color="teal.500">
@@ -383,55 +340,27 @@ const LoggedInHome = ({ onLogout, user }) => {
       {/* Chart and Financial Advice Sections */}
       <Flex direction={{ base: "column", md: "row" }} justify="space-between" gap={4} mb={8}>
         {/* Chart Section */}
-        <Box bg="white" p={4} borderRadius="lg" boxShadow="md" width={{ base: "100%", md: "50%" }}>
+        <Box bg="white" p={6} borderRadius="lg" boxShadow="md" width={{ base: "100%", md: "50%" }}>
           <Heading as="h2" fontSize={{ base: "lg", md: "xl" }} mb={4} color="teal.500">
             Spending and Earnings
           </Heading>
-          <LineChart width={500} height={300} data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Line type="monotone" dataKey="amount" stroke="#8884d8" />
-          </LineChart>
+          <PieChartComponent />
         </Box>
 
         {/* Financial Advice Section */}
-        <Box bg="white" p={6} borderRadius="lg" boxShadow="md" width={{ base: "100%", md: "50%" }}>
-          <Heading as="h2" fontSize={{ base: "lg", md: "xl" }} mb={4} color="teal.500">
-            Financial Advice
-          </Heading>
-          <Text fontSize="md" color="gray.700" mb={6}>
-            Here are some personalized tips to help you manage your finances better:
-          </Text>
-
-          <List spacing={3}>
-            {financialAdvice.map((advice, index) => (
-              <ListItem key={index}>
-                <ListIcon as={MdCheckCircle} color="teal.500" />
-                {advice}
-              </ListItem>
-            ))}
-          </List>
-        </Box>
+        <FinancialAdvice transactions={transactions} />
       </Flex>
-
-      <Flex  direction={{ base: "column", md: "row" }} justify="space-between" gap={4} mb={8}>
+      <Flex direction={{ base: "column", md: "row" }} justify="space-between" gap={4} mb={8}>
         {/* Budget Planning Section */}
         <Box bg="white" p={6} borderRadius="lg" boxShadow="md" width={{ base: "100%", md: "50%" }}>
           <BudgetComponent />
         </Box>
-
 
         {/* Render the Savings Challenges section */}
         <Box bg="white" p={6} borderRadius="lg" boxShadow="md" width={{ base: "100%", md: "50%" }}>
           <GoalComponent />
         </Box>
       </Flex>
-
-
-
     </Box>
   );
 };
