@@ -1,24 +1,22 @@
-FINBRIDGE
-Description
+# Personal Finance Manager (FinBridge)
+
+## Description
 Personal Finance Manager is a web application designed to help users manage their finances effectively. It allows users to track their income and expenses, set budgets, participate in savings challenges, and receive personalized financial advice powered by Machine Learning (ML).
 
-Features
-Track income and expenses
+## Features
+- Track income and expenses
+- Set and manage budgets
+- Participate in savings challenges
+- Receive personalized financial advice using ML
+- Visualize spending and earnings with charts
 
-Set and manage budgets
+---
 
-Participate in savings challenges
-
-Receive personalized financial advice using ML
-
-Visualize spending and earnings with charts
-
-Installation
+## Installation
 To run this project locally, follow these steps:
 
-1. Clone the Repository
-bash
-Copy
+### 1. Clone the Repository
+```bash
 git clone https://github.com/your-username/Personal-Finance-Manager.git
 cd Personal-Finance-Manager
 2. Set Up the Frontend
