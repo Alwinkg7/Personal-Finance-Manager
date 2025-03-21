@@ -1,4 +1,4 @@
-Personal Finance Manager
+FINBRIDGE
 Description
 Personal Finance Manager is a web application designed to help users manage their finances effectively. It allows users to track their income and expenses, set budgets, participate in savings challenges, and receive personalized financial advice powered by Machine Learning (ML).
 
