@@ -18,7 +18,7 @@ To run this project locally, follow these steps:
 ### 1. Clone the Repository
 git clone https://github.com/your-username/Personal-Finance-Manager.git
 cd Personal-Finance-Manager
-2. Set Up the Frontend
+### 2. Set Up the Frontend
 Navigate to the frontend directory:
 
 bash
@@ -34,7 +34,7 @@ Start the frontend server:
 bash
 Copy
 npm start
-3. Set Up the Backend (Node.js)
+### 3. Set Up the Backend (Node.js)
 Navigate to the backend directory:
 
 bash
@@ -50,7 +50,7 @@ Start the backend server:
 bash
 Copy
 npm start
-4. Set Up the Django ML Service
+### 4. Set Up the Django ML Service
 Navigate to the ml_service directory:
 
 bash
@@ -73,26 +73,26 @@ bash
 Copy
 python manage.py runserver
 Usage
-Open your web browser and navigate to http://localhost:3000.
+### Open your web browser and navigate to http://localhost:3000.
 
-Register a new account or log in with your existing credentials.
+### Register a new account or log in with your existing credentials.
 
-Start managing your finances by adding transactions, setting budgets, and participating in savings challenges.
+### Start managing your finances by adding transactions, setting budgets, and participating in savings challenges.
 
-Receive personalized financial advice powered by ML.
+### Receive personalized financial advice powered by ML.
 
-Implementation Details
-1. Django ML Service
+### Implementation Details
+### 1. Django ML Service
 The Django ML service analyzes user transactions and provides personalized financial advice. It uses clustering algorithms (e.g., K-Means) to identify spending patterns and generate insights.
 
-Key Files:
+### Key Files:
 ml_service/financial_advice/views.py: Handles the /analyze/ endpoint.
 
 ml_service/financial_advice/models.py: Defines the data models (if needed).
 
 ml_service/financial_advice/urls.py: Defines the API routes.
 
-Example: views.py
+### Example: views.py
 python
 Copy
 from django.http import JsonResponse
@@ -141,15 +141,15 @@ def analyze_spending(request):
             return JsonResponse({"error": str(e)}, status=500)
 
     return JsonResponse({"error": "Invalid request method"}, status=400)
-2. Backend (Node.js)
+### 2. Backend (Node.js)
 The backend communicates with the Django ML service to fetch financial advice and serves it to the frontend.
 
-Key Files:
+### Key Files:
 backend/controllers/financialAdviceController.js: Handles the /api/financial-advice endpoint.
 
 backend/routes/financialAdviceRoutes.js: Defines the API routes.
 
-Example: financialAdviceController.js
+### Example: financialAdviceController.js
 javascript
 Copy
 import axios from "axios";
@@ -190,15 +190,15 @@ export const getFinancialAdvice = async (req, res) => {
     res.status(500).json({ error: "Failed to generate financial advice" });
   }
 };
-3. Frontend (React)
+### 3. Frontend (React)
 The frontend displays financial advice and interacts with the backend to fetch data.
 
-Key Files:
+### Key Files:
 frontend/src/components/FinancialAdvice.jsx: Displays financial advice.
 
 frontend/src/App.js: Main application component.
 
-Example: FinancialAdvice.jsx
+### Example: FinancialAdvice.jsx
 javascript
 Copy
 import React, { useEffect, useState } from "react";
@@ -247,10 +247,10 @@ const FinancialAdvice = ({ transactions }) => {
 };
 
 export default FinancialAdvice;
-Contributing
-Contributions are welcome! Please follow these steps to contribute:
+### Contributing
+### Contributions are welcome! Please follow these steps to contribute:
 
-Fork the repository.
+### Fork the repository.
 
 Create a new branch: git checkout -b feature/your-feature-name.
 
@@ -260,9 +260,9 @@ Push to the branch: git push origin feature/your-feature-name.
 
 Open a pull request.
 
-License
+### License
 This project is licensed under the MIT License. See the LICENSE file for details.
 
-Contact
+### Contact
 If you have any questions or suggestions, feel free to contact me at [alwinkgofficial@gmail.com].
 ```bash
