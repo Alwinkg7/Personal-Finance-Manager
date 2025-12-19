@@ -79,7 +79,7 @@ const PieChartComponent = () => {
       </Select>
 
       {/* Pie Chart */}
-      <ResponsiveContainer width="100%" height={250}>
+      <ResponsiveContainer width="100%" height={260}>
         <PieChart>
             <Pie
             data={data}
